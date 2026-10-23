@@ -48,46 +48,46 @@ app.registerExtension({
             // 3. Add fields in your exact requested order for indices 1 up to targetCount
             for (let i = 1; i <= targetCount; i++) {
                 // 1. clip_l wireable string input + text box widget
-                const clipFieldName = `clip_l_${i}`;
+                const clipFieldName = `positive_clip_l_${i}`;
                 if (!node.inputs?.some(inp => inp.name === clipFieldName)) {
                     node.addInput(clipFieldName, "STRING", { shape: 7 });
                 }
 
                 // 2. t5xxl wireable string input + text box widget
-                const t5FieldName = `t5xxl_${i}`;
+                const t5FieldName = `positive_t5xxl_${i}`;
                 if (!node.inputs?.some(inp => inp.name === t5FieldName)) {
                     node.addInput(t5FieldName, "STRING", { shape: 7 });
                 }
 
                 // 3. guidance number widget
-                if (!node.widgets?.some(w => w.name === `guidance_${i}`)) {
-                    node.addWidget("number", `guidance_${i}`, 1.0, null, { min: 0.0, max: 100.0, step: 0.1, precision: 1 });
+                if (!node.widgets?.some(w => w.name === `positive_guidance_${i}`)) {
+                    node.addWidget("number", `positive_guidance_${i}`, 1.0, null, { min: 0.0, max: 100.0, step: 0.1, precision: 1 });
                     node.tooltip = "Sets the classifier-free guidance scale for this conditioning.";
                 }
 
                 // 4. reference_image input socket
-                if (!node.inputs?.some(inp => inp.name === `reference_image_${i}`)) {
-                    node.addInput(`reference_image_${i}`, "IMAGE");
+                if (!node.inputs?.some(inp => inp.name === `reference_to_conditioning_${i}`)) {
+                    node.addInput(`reference_to_conditioning_${i}`, "IMAGE");
                 }
 
                 // 5. mask input socket
-                if (!node.inputs?.some(inp => inp.name === `mask_${i}`)) {
-                    node.addInput(`mask_${i}`, "MASK");
+                if (!node.inputs?.some(inp => inp.name === `conditioning_mask_${i}`)) {
+                    node.addInput(`conditioning_mask_${i}`, "MASK");
                 }
 
                 // 6. mask blur widget
-                if (!node.widgets?.some(w => w.name === `mask_${i}_blur`)) {
-                    node.addWidget("number", `mask_${i}_blur`, 0, null, { min: 0, max: 256, step: 1, precision: 0 });
+                if (!node.widgets?.some(w => w.name === `conditioning_mask_${i}_blur`)) {
+                    node.addWidget("number", `conditioning_mask_${i}_blur`, 0, null, { min: 0, max: 256, step: 1, precision: 0 });
                 }
 
                 // 7. mask resize widget
-                if (!node.widgets?.some(w => w.name === `mask_${i}_resize`)) {
-                    node.addWidget("number", `mask_${i}_resize`, 0, null, { min: -256, max: 256, step: 1, precision: 0 });
+                if (!node.widgets?.some(w => w.name === `conditioning_mask_${i}_resize`)) {
+                    node.addWidget("number", `conditioning_mask_${i}_resize`, 0, null, { min: -256, max: 256, step: 1, precision: 0 });
                 }
 
                 // 8. mask strength widget
-                if (!node.widgets?.some(w => w.name === `mask_${i}_strength`)) {
-                    node.addWidget("number", `mask_${i}_strength`, 1.0, null, { min: 0.0, max: 10.0, step: 0.01, precision: 2 });
+                if (!node.widgets?.some(w => w.name === `conditioning_mask_${i}_strength`)) {
+                    node.addWidget("number", `conditioning_mask_${i}_strength`, 1.0, null, { min: 0.0, max: 10.0, step: 0.01, precision: 2 });
                 }
             }
 
@@ -95,9 +95,9 @@ app.registerExtension({
             node.setDirtyCanvas(true, true);
         };
 
-        const inputCountWidget = node.widgets.find(w => w.name === "inputcount");
+        const inputCountWidget = node.widgets.find(w => w.name === "inputs_count");
         if (inputCountWidget) {
-            // Run once on creation to match current inputcount value
+            // Run once on creation to match current inputs_count value
             updateDynamicFields(inputCountWidget.value);
 
             const originalCallback = inputCountWidget.callback;
